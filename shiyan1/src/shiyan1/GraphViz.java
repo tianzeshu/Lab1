@@ -326,7 +326,7 @@ public class GraphViz {
 
         this.graph = sb;
     }
-    public static void createDotGraph(String dotFormat,String fileName)
+    public static void createDotGraph(String dotFormat,String fileName) throws NullPointerException
     {
         GraphViz gv=new GraphViz();
         gv.addln(gv.start_graph());
@@ -338,7 +338,8 @@ public class GraphViz {
         File out = new File(fileName+"."+ type);
         gv.writeGraphToFile( gv.getGraph( gv.getDotSource(), type ), out );
     }
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) //throws NullPointerException 
+    {
         String dotFormat="1->2[color = red,label = 100];1->3;1->4;4->5;4->6;6->7;5->7;3->8;3->6;8->7;2->8;2->5;";
         // String dotFormat="1->2;2->3;3->4;4->5;5->6;6->7;";
         createDotGraph(dotFormat, "DotGraph");

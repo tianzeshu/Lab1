@@ -1,8 +1,6 @@
 package shiyan1;
 
-import java.io.*;
 import java.util.Random;
-import java.util.Scanner;
 
 public class Picture { // 以邻接表方式构建图
 	private class ENode {
@@ -20,13 +18,13 @@ public class Picture { // 以邻接表方式构建图
 		ENode firstEdge; // 指向第一条依附该顶点的弧
 		VNode father;
 		int num; // 序号
-		int visit = 0; // 便于随机游走查看是否访问过
+		//int visit = 0; // 便于随机游走查看是否访问过
 	};
 
 	private int slen;
 	private int elen;
 	private static VNode[] mVexs; // 顶点数组
-	private ENode[] bridgeWord;
+	//private ENode[] bridgeWord;
 	private int bridgeCount = 0;
 
 	public Picture(String s) {
@@ -134,7 +132,8 @@ public class Picture { // 以邻接表方式构建图
 					if (mVexs[i].firstEdge != null) {
 						myENode = mVexs[i].firstEdge;
 						sign = true;
-					} else
+					} 
+					else
 						sign = false;
 					break;
 				}
@@ -142,27 +141,24 @@ public class Picture { // 以邻接表方式构建图
 			if (sign == true) {
 				sign = false;
 				while (true) {
-					for (int k = 0; k < slen; k++) {
-						if (myENode.ivex.equals(mVexs[k].data)) {
-							if (mVexs[k].firstEdge != null)
-								q = mVexs[k].firstEdge;
+					for (int k = 0; k < slen; k++)
+					if (myENode.ivex.equals(mVexs[k].data)) {
+						if (mVexs[k].firstEdge != null)
+							q = mVexs[k].firstEdge;
+						if (q.ivex.equals(s2)) {
+							System.out.println("The bridge words from " + s1 + " to " + s2 + " are:" + myENode.ivex);
+							sign = true;
+							break;
+						}
+						while (q != null) {
 							if (q.ivex.equals(s2)) {
-								System.out
-										.println("The bridge words from " + s1 + " to " + s2 + " are:" + myENode.ivex);
+								System.out.println("The bridge words from " + s1 + " to " + s2 + " are:" + myENode.ivex);
 								sign = true;
 								break;
 							}
-							while (q != null) {
-								if (q.ivex.equals(s2)) {
-									System.out.println(
-											"The bridge words from " + s1 + " to " + s2 + " are:" + myENode.ivex);
-									sign = true;
-									break;
-								}
-								q = q.nextEdge;
-							}
-							break;
+							q = q.nextEdge;
 						}
+						break;
 					}
 					myENode = myENode.nextEdge;
 					if (myENode == null)
@@ -255,10 +251,11 @@ public class Picture { // 以邻接表方式构建图
 		for (int i = 0; i < count; i++) {
 			System.out.print(splitedChange[i] + " ");
 		}
-		System.out.print("\n");
+		System.out.println();
 	}
 
-	int[] minlength = new int[200];
+	static int MIN_LENGTH = 200;
+	int[] minlength = new int[MIN_LENGTH];
 	int minlen = 1000000, count = 1;
 	private ENode[] queue = new ENode[100];
 	private int queueFront = 0, queueBack = 0;
