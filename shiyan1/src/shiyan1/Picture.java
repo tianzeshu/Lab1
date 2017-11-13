@@ -3,6 +3,8 @@ package shiyan1;
 import java.io.*;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Picture { // 以邻接表方式构建图
 	private class ENode {
@@ -31,6 +33,8 @@ public class Picture { // 以邻接表方式构建图
 
 	public Picture(String s) {
 		// 确定顶点和边的数量
+		s = change(s);
+		s = filter(s);
 		String[] splited = s.split("\\s+");
 		String[] splited_filter = new String[100];
 		boolean sign = true;
@@ -102,6 +106,32 @@ public class Picture { // 以邻接表方式构建图
 			}
 		}
 	}
+	
+	public static String change(String s) {
+		// 替换非字母字符为空格
+		String REGEX = "[^A-Za-z]";
+		String REPLACE = " ";
+		Pattern p = Pattern.compile(REGEX);
+		Matcher m = p.matcher(s);
+		s = m.replaceAll(REPLACE);
+		// 大写转化小写
+		String Lowstr = s.toLowerCase();
+		return Lowstr;
+	}
+
+	public static String filter(String s) {
+		// 删除多余的空格
+		String REGEX = "  ";
+		String REPLACE = " ";
+		Pattern p = Pattern.compile(REGEX);
+		while (true) {
+			Matcher m = p.matcher(s);
+			if (!m.find())
+				break;
+			s = m.replaceAll(REPLACE);
+		}
+		return s;
+	}
 
 	public void showPicture() {
 		ENode myENode;
@@ -147,15 +177,13 @@ public class Picture { // 以邻接表方式构建图
 							if (mVexs[k].firstEdge != null)
 								q = mVexs[k].firstEdge;
 							if (q.ivex.equals(s2)) {
-								System.out
-										.println("The bridge words from " + s1 + " to " + s2 + " are:" + myENode.ivex);
+								System.out.println("The bridge words from " + s1 + " to " + s2 + " are:" + myENode.ivex);
 								sign = true;
 								break;
 							}
 							while (q != null) {
 								if (q.ivex.equals(s2)) {
-									System.out.println(
-											"The bridge words from " + s1 + " to " + s2 + " are:" + myENode.ivex);
+									System.out.println("The bridge words from " + s1 + " to " + s2 + " are:" + myENode.ivex);
 									sign = true;
 									break;
 								}
@@ -349,7 +377,7 @@ public class Picture { // 以邻接表方式构建图
 		}
 		calcShort(queue[queueFront].ivex, s2);
 	}
-
+	
 	public int showShortestPath(String s1, String s2) {
 		VNode q = new VNode();
 		String[] path = new String[100];
@@ -374,10 +402,15 @@ public class Picture { // 以邻接表方式构建图
 			System.out.print(path[i] + " ");
 		return minlen;
 	}
-
+	String howEnd = new String();
 	public String randomWalk(String s) {
 		boolean sign = false;
 		String randomS = new String();
+		if (s.equals("")) {
+			System.out.println("输入为空!");
+			howEnd = "输入为空!";
+			return randomS;
+		}
 		for (int i = 0; i < mVexs.length; i++) {
 			if (s.equals(mVexs[i].data)) {
 				sign = true;
@@ -396,8 +429,10 @@ public class Picture { // 以邻接表方式构建图
 				break;
 			}
 		}
-		if (sign == false)
+		if (sign == false) {
 			System.out.println("输入的位置有误!");
+			howEnd = "输入的位置有误!";
+		}
 		return randomS;
 	}
 
@@ -410,6 +445,7 @@ public class Picture { // 以邻接表方式构建图
 			if (s.equals(mVex.data)) {
 				if (mVex.firstEdge == null) {
 					System.out.println("没有出边!");
+					howEnd = "没有出边!";
 					return s;
 				}
 				q = mVex.firstEdge;
@@ -420,6 +456,7 @@ public class Picture { // 以邻接表方式构建图
 				q = rand[random.nextInt(cnt)];
 				if (!visited(s, q.ivex)) {
 					System.out.println("重复边:" + s + "->" + q.ivex);
+					howEnd = "重复边!";
 					return s;
 				}
 				q.visit = 1;
@@ -493,65 +530,89 @@ public class Picture { // 以邻接表方式构建图
 			System.out.print("\n");
 		}
 	}
-
-	public void shortroad(String s1, String s2) {
-		int sign1 = 0, sign2 = 0;
-		ENode q = new ENode();
-		int[][] sr = new int[mVexs.length][mVexs.length];
-		int[][] rr = new int[mVexs.length][mVexs.length];
-		for (int i = 0; i < mVexs.length; i++) {
-			for (int j = 0; j < mVexs.length; j++) {
-				rr[i][j] = -1;
-				sr[i][j] = 100;
-			}
+	int shortLength;
+	String shortR = new String();
+	public boolean shortroad(String s1, String s2) {
+		boolean sign3=false, sign4=false;
+		if(s1.equals("")||s2.equals("")) {
+			System.out.println("输入了空字符串!");
+			shortR = "输入了空字符串!";
+			return false;
 		}
 		for (int i = 0; i < mVexs.length; i++) {
-			q = mVexs[i].firstEdge;
-			while (q != null) {
-				for (int j = 0; j < mVexs.length; j++) {
-					if (q.ivex.equals(mVexs[j].data)) {
-						sr[i][j] = q.weight;
-						q = q.nextEdge;
-						break;
-					}
-
-				}
-			}
+			if (s1.equals(mVexs[i].data))
+				sign3 = true;
+			if (s2.equals(mVexs[i].data))
+				sign4 = true;
 		}
-		for (int h = 0; h < mVexs.length; h++) {
+		if (sign3 && sign4) {
+			int sign1 = 0, sign2 = 0;
+			ENode q = new ENode();
+			int[][] sr = new int[mVexs.length][mVexs.length];
+			int[][] rr = new int[mVexs.length][mVexs.length];
 			for (int i = 0; i < mVexs.length; i++) {
 				for (int j = 0; j < mVexs.length; j++) {
-					if (sr[i][j] > (sr[i][h] + sr[h][j])) {
-						sr[i][j] = (sr[i][h] + sr[h][j]);
-						rr[i][j] = h;
+					rr[i][j] = -1;
+					sr[i][j] = 100;
+				}
+			}
+			for (int i = 0; i < mVexs.length; i++) {
+				q = mVexs[i].firstEdge;
+				while (q != null) {
+					for (int j = 0; j < mVexs.length; j++) {
+						if (q.ivex.equals(mVexs[j].data)) {
+							sr[i][j] = q.weight;
+							q = q.nextEdge;
+							break;
+						}
+
 					}
 				}
 			}
-		}
-		for (int i = 0; i < slen; i++) {
-			if (s1.equals(mVexs[i].data)) {
-				sign1 = i;
+			for (int h = 0; h < mVexs.length; h++) {
+				for (int i = 0; i < mVexs.length; i++) {
+					for (int j = 0; j < mVexs.length; j++) {
+						if (sr[i][j] > (sr[i][h] + sr[h][j])) {
+							sr[i][j] = (sr[i][h] + sr[h][j]);
+							rr[i][j] = h;
+						}
+					}
+				}
 			}
-			if (s2.equals(mVexs[i].data)) {
-				sign2 = i;
+			for (int i = 0; i < slen; i++) {
+				if (s1.equals(mVexs[i].data)) {
+					sign1 = i;
+				}
+				if (s2.equals(mVexs[i].data)) {
+					sign2 = i;
+				}
 			}
-		}
 
-		if (sr[sign1][sign2] == 100) {
-			System.out.println("不可达!");
-			return;
+			if (sr[sign1][sign2] == 100) {
+				System.out.println("不可达!");
+				shortR = "不可达!";
+				return false;
+			}
+			System.out.println("最短路径长度:" + sr[sign1][sign2]);
+			shortLength = sr[sign1][sign2];
+			System.out.print("最短路径是:" + mVexs[sign1].data + " ");
+			shortR += mVexs[sign1].data + " ";
+			shortPathV[shortCnt++] = mVexs[sign1].data;
+			sout(sign1, sign2, sr, rr);
+			System.out.print("\n");
+			return true;
+			/*
+			 * String[] ss = new String[100]; int cnt = 0; while(rr[sign1][sign2] !=
+			 * -1) { ss[cnt++] = mVexs[rr[sign1][sign2]].data;
+			 * sign2=rr[sign1][sign2]; } for(int i = cnt - 1; i >= 0; i--)
+			 * System.out.print(ss[i]+" "); System.out.print(s2+"\n");
+			 */
+		} else {
+			System.out.println("未找到节点!");
+			shortR = "未找到节点!";
+			return false;
 		}
-		System.out.println("最短路径长度:" + sr[sign1][sign2]);
-		System.out.print("最短路径是:" + mVexs[sign1].data + " ");
-		shortPathV[shortCnt++] = mVexs[sign1].data;
-		sout(sign1, sign2, sr, rr);
-		System.out.print("\n");
-		/*
-		 * String[] ss = new String[100]; int cnt = 0; while(rr[sign1][sign2] !=
-		 * -1) { ss[cnt++] = mVexs[rr[sign1][sign2]].data;
-		 * sign2=rr[sign1][sign2]; } for(int i = cnt - 1; i >= 0; i--)
-		 * System.out.print(ss[i]+" "); System.out.print(s2+"\n");
-		 */
+		
 	}
 
 	public void sout2(int s1, int s2, int[][] sr, int[][] rr) {
@@ -570,6 +631,7 @@ public class Picture { // 以邻接表方式构建图
 		if (rr[s1][s2] == -1) {
 			System.out.print(mVexs[s2].data + " ");
 			shortPathV[shortCnt++] = mVexs[s2].data;
+			shortR += mVexs[s2].data + " ";
 		} else {
 			tmp = rr[s1][s2];
 			sout(s1, tmp, sr, rr);
@@ -625,7 +687,6 @@ public class Picture { // 以邻接表方式构建图
 							sign = true;
 							break;
 						}
-
 					}
 				}
 				if (sign == false)
