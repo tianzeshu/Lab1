@@ -33,7 +33,7 @@ import java.util.Properties;
  *    gv.writeGraphToFile( gv.getGraph( gv.getDotSource(), type ), out );
  *
  */
-public class GraphViz {
+public class Draw {
     /**
      * Detects the client's operating system.
      */
@@ -106,7 +106,7 @@ public class GraphViz {
      * Constructor: creates a new GraphViz object that will contain
      * a graph.
      */
-    public GraphViz() {
+    public Draw() {
     }
 
     /**
@@ -211,7 +211,7 @@ public class GraphViz {
         byte[] img_stream = null;
 
         try {
-            img = File.createTempFile("graph_", "." + type, new File(GraphViz.TEMP_DIR));
+            img = File.createTempFile("graph_", "." + type, new File(Draw.TEMP_DIR));
             Runtime rt = Runtime.getRuntime();
 
             // patch by Mike Chenault
@@ -229,7 +229,7 @@ public class GraphViz {
             if (img.delete() == false)
                 System.err.println("Warning: " + img.getAbsolutePath() + " could not be deleted!");
         } catch (java.io.IOException ioe) {
-            System.err.println("Error:    in I/O processing of tempfile in dir " + GraphViz.TEMP_DIR + "\n");
+            System.err.println("Error:    in I/O processing of tempfile in dir " + Draw.TEMP_DIR + "\n");
             System.err.println("       or in calling external command");
             ioe.printStackTrace();
         } catch (java.lang.InterruptedException ie) {
@@ -250,7 +250,7 @@ public class GraphViz {
     private File writeDotSourceToFile(String str) throws java.io.IOException {
         File temp;
         try {
-            temp = File.createTempFile("dorrr", ".dot", new File(GraphViz.TEMP_DIR));
+            temp = File.createTempFile("dorrr", ".dot", new File(Draw.TEMP_DIR));
             FileWriter fout = new FileWriter(temp);
             fout.write(str);
             BufferedWriter br = new BufferedWriter(new FileWriter("dotsource.dot"));
@@ -328,7 +328,7 @@ public class GraphViz {
     }
     public static void createDotGraph(String dotFormat,String fileName)
     {
-        GraphViz gv=new GraphViz();
+        Draw gv=new Draw();
         gv.addln(gv.start_graph());
         gv.add(dotFormat);
         gv.addln(gv.end_graph());

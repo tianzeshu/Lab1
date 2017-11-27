@@ -1,0 +1,2 @@
+digraph G {
+hello->my[label=1];my->friend[label=1];}
